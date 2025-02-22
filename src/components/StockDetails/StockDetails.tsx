@@ -43,7 +43,7 @@ const StockDetails = ({ stock, onBack }: StockDetailsProps) => {
           background: "linear-gradient(135deg, #6B8DD6 0%, #8E37D7 100%)",
           borderRadius: 2,
           padding: 3,
-          width: "100%",
+          // width: "100%",
           position: "relative",
           overflow: "hidden",
           transform: "translateZ(0)",

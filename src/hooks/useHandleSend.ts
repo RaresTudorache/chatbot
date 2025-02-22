@@ -39,10 +39,16 @@ export const useHandleSend = () => {
       .map((item) => item.stockData?.stockName)
       .filter(Boolean);
 
-    const stockFound = stocksInHistory.find(
-      (stockName) =>
-        stockName && inputText.toLowerCase().includes(stockName.toLowerCase())
-    );
+    const stockFound = stocksInHistory.find((stockName) => {
+      if (!stockName) return false;
+      const stockWords = stockName.toLowerCase().split(" ");
+      const inputWords = inputText.toLowerCase().split(" ");
+      return stockWords.some((word) =>
+        inputWords.some(
+          (inputWord) => inputWord.includes(word) || word.includes(inputWord)
+        )
+      );
+    });
 
     if (stockFound) {
       const stock = chatHistory.find(

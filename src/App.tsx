@@ -44,7 +44,12 @@ const App = () => {
         <Stack
           spacing={0}
           sx={{
-            width: "75%",
+            width: {
+              xs: "95%",
+              sm: "90%",
+              md: "80%",
+              lg: "75%",
+            },
             height: "90%",
             margin: "0 auto",
           }}
@@ -58,7 +63,7 @@ const App = () => {
               flex: 1,
               paddingTop: "2rem",
               paddingBottom: "0",
-              borderRadius: "0 0 16px 16px",
+              borderRadius: { xs: "0 0 8px 8px", sm: "0 0 16px 16px" },
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
@@ -71,7 +76,11 @@ const App = () => {
               spacing={2}
               sx={{
                 width: "100%",
-                padding: "0 2rem",
+                padding: {
+                  xs: "0 1rem",
+                  sm: "0 1.5rem",
+                  md: "0 2rem",
+                },
                 flex: 1,
                 marginBottom: "2rem",
               }}
