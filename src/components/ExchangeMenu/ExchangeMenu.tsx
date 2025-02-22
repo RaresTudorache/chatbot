@@ -15,7 +15,7 @@ const ExchangeMenu = ({ exchanges, onSelectExchange }: ExchangeMenuProps) => {
       {exchanges.map((exchange) => (
         <Button
           key={exchange.code}
-          variant="contained"
+          variant="outlined"
           onClick={() => onSelectExchange(exchange.code)}
         >
           {exchange.stockExchange} ({exchange.code})

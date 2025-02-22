@@ -69,7 +69,12 @@ const App = () => {
           >
             <Stack
               spacing={2}
-              sx={{ width: "100%", padding: "0 2rem", flex: 1 }}
+              sx={{
+                width: "100%",
+                padding: "0 2rem",
+                flex: 1,
+                marginBottom: "2rem",
+              }}
             >
               {chatHistory.map((item, index) => {
                 switch (item.contentType) {

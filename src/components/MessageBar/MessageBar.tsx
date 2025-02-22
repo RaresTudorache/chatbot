@@ -17,7 +17,7 @@ const MessageBar = ({ type, content }: MessageBarProps) => {
         borderRadius: "12px",
         backgroundColor: type === UserType.USER ? PRIMARY_COLOR : LIGHT_GREY,
         color: type === UserType.USER ? "white" : "black",
-        maxWidth: "70%",
+        maxWidth: "50%",
         alignSelf: type === UserType.USER ? "flex-end" : "flex-start",
         position: "relative",
         "&::before": {
@@ -27,11 +27,10 @@ const MessageBar = ({ type, content }: MessageBarProps) => {
           [type === UserType.USER ? "right" : "left"]: "-8px",
           width: "20px",
           height: "20px",
-          backgroundColor: "inherit",
           clipPath:
             type === UserType.USER
-              ? "polygon(100% 0, 0 0, 100% 100%)"
-              : "polygon(0 0, 100% 0, 0 100%)",
+              ? "path('M 100 0 Q 50 0 100 100')"
+              : "path('M 0 0 Q 50 0 0 100')",
         },
       }}
     >

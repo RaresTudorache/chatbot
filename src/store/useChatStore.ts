@@ -22,6 +22,8 @@ type StoreState = {
   addToChatHistory: (chatItem: ChatItem) => void;
 };
 
+//this could be futher improved by using a reducer to handle the chat history
+// and also by creating scenarios
 export const useChatStore = create<StoreState>((set, get) => ({
   exchange: null,
   selectedStock: null,
