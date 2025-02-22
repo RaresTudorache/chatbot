@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-
 export type Stock = {
   code: string;
   stockName: string;
@@ -12,9 +10,22 @@ export type StockExchange = {
   topStocks: Stock[];
 };
 
-export type UserType = "assistant" | "user";
+export enum UserType {
+  ASSISTANT = "assistant",
+  USER = "user",
+}
+
+export enum ContentType {
+  TEXT = "text",
+  EXCHANGE_LIST = "exchangeList",
+  STOCK_MENU = "stockMenu",
+  STOCK_DETAILS = "stockDetails",
+}
 
 export type ChatItem = {
   type: UserType;
-  content: ReactNode;
+  contentType: ContentType;
+  textContent?: string;
+  exchangeData?: StockExchange;
+  stockData?: Stock;
 };

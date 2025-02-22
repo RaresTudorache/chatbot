@@ -1,24 +1,32 @@
 import { Stack, CssBaseline, ThemeProvider, Paper } from "@mui/material";
-import HomeMenu from "./components/HomeMenu/HomeMenu";
+import HomeMenu from "./components/ExchangeMenu/ExchangeMenu";
 import StockDetails from "./components/StockDetails/StockDetails";
 import StockMenu from "./components/StockMenu/StockMenu";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import MessageBar from "./components/MessageBar/MessageBar";
-import { theme } from "./theme/theme";
+import { BLACK, LIGHT_GREY, theme } from "./theme/theme";
 import { useChatStore } from "./store/useChatStore";
+import { ContentType } from "./types/types";
+import { useRef, useEffect } from "react";
 
 const App = () => {
   const {
     chatHistory,
-    exchange,
-    selectedStock,
     stockExchanges,
-    setSelectedStock,
     handleSelectExchange,
     handleSelectStock,
     handleBackToHome,
   } = useChatStore();
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop =
+        scrollContainerRef.current.scrollHeight;
+    }
+  }, [chatHistory]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -29,7 +37,7 @@ const App = () => {
           alignItems: "center",
           width: "100vw",
           height: "100vh",
-          background: "linear-gradient(135deg, #f3f4f6, #e0e0e0)",
+          background: LIGHT_GREY,
           overflow: "hidden",
         }}
       >
@@ -45,6 +53,7 @@ const App = () => {
 
           <Paper
             elevation={6}
+            ref={scrollContainerRef}
             sx={{
               flex: 1,
               paddingTop: "2rem",
@@ -54,7 +63,7 @@ const App = () => {
               flexDirection: "column",
               justifyContent: "space-between",
               alignItems: "center",
-              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.15)",
+              boxShadow: BLACK,
               overflow: "auto",
             }}
           >
@@ -62,43 +71,60 @@ const App = () => {
               spacing={2}
               sx={{ width: "100%", padding: "0 2rem", flex: 1 }}
             >
-              {chatHistory.map((item, index) => (
-                <MessageBar key={index} {...item} />
-              ))}
-              {!exchange && (
-                <MessageBar
-                  type="assistant"
-                  content={
-                    <HomeMenu
-                      onSelectExchange={handleSelectExchange}
-                      exchanges={stockExchanges}
-                    />
-                  }
-                />
-              )}
-              {exchange && !selectedStock && (
-                <MessageBar
-                  type="assistant"
-                  content={
-                    <StockMenu
-                      stocks={exchange.topStocks}
-                      onSelectStock={handleSelectStock}
-                      onBack={handleBackToHome}
-                    />
-                  }
-                />
-              )}
-              {selectedStock && (
-                <MessageBar
-                  type="assistant"
-                  content={
-                    <StockDetails
-                      stock={selectedStock}
-                      onBack={() => setSelectedStock(null)}
-                    />
-                  }
-                />
-              )}
+              {chatHistory.map((item, index) => {
+                switch (item.contentType) {
+                  case ContentType.TEXT:
+                    return (
+                      <MessageBar
+                        key={index}
+                        type={item.type}
+                        content={item.textContent}
+                      />
+                    );
+                  case ContentType.EXCHANGE_LIST:
+                    return (
+                      <MessageBar
+                        key={index}
+                        type={item.type}
+                        content={
+                          <HomeMenu
+                            exchanges={stockExchanges}
+                            onSelectExchange={handleSelectExchange}
+                          />
+                        }
+                      />
+                    );
+                  case ContentType.STOCK_MENU:
+                    return (
+                      <MessageBar
+                        key={index}
+                        type={item.type}
+                        content={
+                          <StockMenu
+                            stocks={item.exchangeData?.topStocks ?? []}
+                            onSelectStock={handleSelectStock}
+                            onBack={handleBackToHome}
+                          />
+                        }
+                      />
+                    );
+                  case ContentType.STOCK_DETAILS:
+                    return (
+                      <MessageBar
+                        key={index}
+                        type={item.type}
+                        content={
+                          <StockDetails
+                            stock={item.stockData!}
+                            onBack={handleBackToHome}
+                          />
+                        }
+                      />
+                    );
+                  default:
+                    return null;
+                }
+              })}
             </Stack>
             <Footer />
           </Paper>

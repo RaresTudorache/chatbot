@@ -1,8 +1,14 @@
 import { create } from "zustand";
-import { ChatItem, Stock, StockExchange } from "../types/types";
+import {
+  ChatItem,
+  ContentType,
+  Stock,
+  StockExchange,
+  UserType,
+} from "../types/types";
 import { getStockData } from "../data/stockData";
 
-interface StoreState {
+type StoreState = {
   exchange: StockExchange | null;
   selectedStock: Stock | null;
   chatHistory: ChatItem[];
@@ -13,16 +19,21 @@ interface StoreState {
   handleSelectExchange: (exchangeCode: string) => void;
   handleSelectStock: (stock: Stock) => void;
   handleBackToHome: () => void;
-  clearChat: () => void;
-}
+  addToChatHistory: (chatItem: ChatItem) => void;
+};
 
 export const useChatStore = create<StoreState>((set, get) => ({
   exchange: null,
   selectedStock: null,
   chatHistory: [
     {
-      type: "assistant",
-      content: "Hello! Welcome to LSEG, I'm here to help you.",
+      type: UserType.ASSISTANT,
+      contentType: ContentType.TEXT,
+      textContent: "Hello! Welcome to LSEG, I'm here to help you!",
+    },
+    {
+      type: UserType.ASSISTANT,
+      contentType: ContentType.EXCHANGE_LIST,
     },
   ],
   stockExchanges: getStockData(),
@@ -30,50 +41,71 @@ export const useChatStore = create<StoreState>((set, get) => ({
   setExchange: (exchange) => set({ exchange }),
   setSelectedStock: (stock) => set({ selectedStock: stock }),
 
+  addToChatHistory: (chatItem: ChatItem) => {
+    set((state) => ({
+      chatHistory: [...state.chatHistory, chatItem],
+    }));
+  },
+
   handleSelectExchange: (exchangeCode) => {
-    const { stockExchanges } = get();
+    const { stockExchanges, addToChatHistory } = get();
     const foundExchange = stockExchanges.find((ex) => ex.code === exchangeCode);
 
-    set((state) => ({
-      exchange: foundExchange || null,
-      selectedStock: null,
-      chatHistory: [
-        ...state.chatHistory,
-        { type: "user", content: `I want to see stocks from ${exchangeCode}` },
-        {
-          type: "assistant",
-          content: `Here are the top stocks from ${exchangeCode}:`,
-        },
-      ],
-    }));
+    if (foundExchange) {
+      set({ exchange: foundExchange, selectedStock: null });
+
+      addToChatHistory({
+        type: UserType.USER,
+        contentType: ContentType.TEXT,
+        textContent: `I want to see stocks from ${exchangeCode}`,
+      });
+
+      addToChatHistory({
+        type: UserType.ASSISTANT,
+        contentType: ContentType.STOCK_MENU,
+        exchangeData: foundExchange,
+      });
+    }
   },
 
   handleSelectStock: (stock) => {
-    set((state) => ({
-      selectedStock: stock,
-      chatHistory: [
-        ...state.chatHistory,
-        { type: "user", content: `Show me details for ${stock.stockName}` },
-        {
-          type: "assistant",
-          content: `Here are the details for ${stock.stockName}:`,
-        },
-      ],
-    }));
+    const { addToChatHistory } = get();
+
+    set({ selectedStock: stock });
+
+    addToChatHistory({
+      type: UserType.USER,
+      contentType: ContentType.TEXT,
+      textContent: `Show me details for ${stock.stockName}`,
+    });
+
+    addToChatHistory({
+      type: UserType.ASSISTANT,
+      contentType: ContentType.STOCK_DETAILS,
+      stockData: stock,
+    });
   },
 
   handleBackToHome: () => {
-    set((state) => ({
-      exchange: null,
-      selectedStock: null,
-      chatHistory: [
-        ...state.chatHistory,
-        { type: "user", content: "Let's start over" },
-        { type: "assistant", content: "What would you like to explore?" },
-      ],
-    }));
-  },
-  clearChat: () => {
-    set({ chatHistory: [] });
+    set({ exchange: null, selectedStock: null, chatHistory: [] });
+
+    const { addToChatHistory } = get();
+
+    addToChatHistory({
+      type: UserType.USER,
+      contentType: ContentType.TEXT,
+      textContent: "Let's start over",
+    });
+
+    addToChatHistory({
+      type: UserType.ASSISTANT,
+      contentType: ContentType.TEXT,
+      textContent: "What would you like to explore?",
+    });
+
+    addToChatHistory({
+      type: UserType.ASSISTANT,
+      contentType: ContentType.EXCHANGE_LIST,
+    });
   },
 }));

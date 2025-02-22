@@ -1,12 +1,12 @@
 import { Button, Stack, Typography } from "@mui/material";
 import { StockExchange } from "../../types/types";
 
-export type HomeMenuProps = {
-  onSelectExchange: (exchangeCode: string) => void;
+export type ExchangeMenuProps = {
   exchanges: StockExchange[];
+  onSelectExchange: (exchangeCode: string) => void;
 };
 
-const HomeMenu = ({ onSelectExchange, exchanges }: HomeMenuProps) => {
+const ExchangeMenu = ({ exchanges, onSelectExchange }: ExchangeMenuProps) => {
   return (
     <Stack spacing={2}>
       <Typography variant="body1" gutterBottom>
@@ -25,4 +25,4 @@ const HomeMenu = ({ onSelectExchange, exchanges }: HomeMenuProps) => {
   );
 };
 
-export default HomeMenu;
+export default ExchangeMenu;

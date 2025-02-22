@@ -2,7 +2,7 @@ import { Button, Stack, Typography } from "@mui/material";
 import { useChatStore } from "../../store/useChatStore";
 
 const Footer = () => {
-  const { chatHistory, clearChat } = useChatStore();
+  const { chatHistory, handleBackToHome } = useChatStore();
 
   return (
     <Stack
@@ -23,7 +23,7 @@ const Footer = () => {
       <Button
         variant="contained"
         color="warning"
-        onClick={clearChat}
+        onClick={handleBackToHome}
         disabled={!chatHistory.length}
       >
         Clear Chat
