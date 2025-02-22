@@ -1,21 +1,26 @@
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
+import { StockExchange } from "../../types/types";
 
 export type HomeMenuProps = {
   onSelectExchange: (exchangeCode: string) => void;
+  exchanges: StockExchange[];
 };
 
-const HomeMenu = ({ onSelectExchange }: HomeMenuProps) => {
+const HomeMenu = ({ onSelectExchange, exchanges }: HomeMenuProps) => {
   return (
     <Stack spacing={2}>
-      <Button variant="contained" onClick={() => onSelectExchange("LSE")}>
-        London Stock Exchange (LSE)
-      </Button>
-      <Button variant="contained" onClick={() => onSelectExchange("NYSE")}>
-        New York Stock Exchange (NYSE)
-      </Button>
-      <Button variant="contained" onClick={() => onSelectExchange("NASDAQ")}>
-        NASDAQ
-      </Button>
+      <Typography variant="body1" gutterBottom>
+        Please select a stock exchange:
+      </Typography>
+      {exchanges.map((exchange) => (
+        <Button
+          key={exchange.code}
+          variant="contained"
+          onClick={() => onSelectExchange(exchange.code)}
+        >
+          {exchange.stockExchange} ({exchange.code})
+        </Button>
+      ))}
     </Stack>
   );
 };

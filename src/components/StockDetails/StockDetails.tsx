@@ -1,11 +1,10 @@
-
 import { Button, Container, Typography, Stack } from "@mui/material";
-import { Stock } from "../../types/stocks";
+import { Stock } from "../../types/types";
 
 type StockDetailsProps = {
   stock: Stock;
   onBack: () => void;
-}
+};
 
 const StockDetails = ({ stock, onBack }: StockDetailsProps) => {
   return (

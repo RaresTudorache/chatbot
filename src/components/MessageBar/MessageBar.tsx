@@ -1,25 +1,36 @@
-import { Button, Stack, Typography } from "@mui/material";
-import { StockExchange } from "types/stocks";
+import { Paper } from "@mui/material";
+import { ChatItem } from "../../types/types";
+import { PRIMARY_COLOR, SECONDARY_COLOR } from "../../theme/theme";
 
-type MessageBarProps = {
-  message: string;
-  options?: StockExchange[];
-};
-
-const MessageBar = ({ message, options }: MessageBarProps) => {
+const MessageBar = ({ type, content }: ChatItem) => {
   return (
-    <Stack direction="row" justifyContent="space-between" alignItems="center">
-      <Typography variant="body1">{message}</Typography>
-      {options && (
-        <Stack direction="row" spacing={2}>
-          {options?.map((option) => (
-            <Button key={option.code} variant="contained">
-              {option.name}
-            </Button>
-          ))}
-        </Stack>
-      )}
-    </Stack>
+    <Paper
+      elevation={2}
+      sx={{
+        padding: "0.8rem 1.2rem",
+        borderRadius: "12px",
+        backgroundColor: type === "user" ? PRIMARY_COLOR : SECONDARY_COLOR,
+        color: "white",
+        maxWidth: "70%",
+        alignSelf: type === "user" ? "flex-end" : "flex-start",
+        position: "relative",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          bottom: "8px",
+          [type === "user" ? "right" : "left"]: "-8px",
+          width: "20px",
+          height: "20px",
+          backgroundColor: "inherit",
+          clipPath:
+            type === "user"
+              ? "polygon(100% 0, 0 0, 100% 100%)"
+              : "polygon(0 0, 100% 0, 0 100%)",
+        },
+      }}
+    >
+      {content}
+    </Paper>
   );
 };
 

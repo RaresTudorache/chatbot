@@ -1,5 +1,5 @@
 import stockData from "./stockData.json";
-import { StockExchange } from "../types/stocks";
+import { StockExchange } from "../types/types";
 
 export const getStockData = (): StockExchange[] => {
   try {

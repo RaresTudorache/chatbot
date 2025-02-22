@@ -1,50 +1,24 @@
-import { getStockData } from "./data/stockData";
-import {
-  Stack,
-  CssBaseline,
-  ThemeProvider,
-  createTheme,
-  Paper,
-} from "@mui/material";
-import { Stock, StockExchange } from "./types/stocks";
-import { useState } from "react";
+import { Stack, CssBaseline, ThemeProvider, Paper } from "@mui/material";
 import HomeMenu from "./components/HomeMenu/HomeMenu";
 import StockDetails from "./components/StockDetails/StockDetails";
 import StockMenu from "./components/StockMenu/StockMenu";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import MessageBar from "./components/MessageBar/MessageBar";
-
-const PRIMARY_COLOR = "#011EFF";
-const SECONDARY_COLOR = "#8028FE";
-
-const theme = createTheme({
-  palette: {
-    primary: { main: PRIMARY_COLOR },
-    secondary: { main: SECONDARY_COLOR },
-  },
-});
+import { theme } from "./theme/theme";
+import { useChatStore } from "./store/useChatStore";
 
 const App = () => {
-  const [exchange, setExchange] = useState<StockExchange | null>(null);
-  const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
-
-  const stockExchanges = getStockData();
-
-  const handleSelectExchange = (exchangeCode: string) => {
-    const foundExchange = stockExchanges.find((ex) => ex.code === exchangeCode);
-    setExchange(foundExchange || null);
-    setSelectedStock(null);
-  };
-
-  const handleSelectStock = (stock: Stock) => {
-    setSelectedStock(stock);
-  };
-
-  const handleBackToHome = () => {
-    setExchange(null);
-    setSelectedStock(null);
-  };
+  const {
+    chatHistory,
+    exchange,
+    selectedStock,
+    stockExchanges,
+    setSelectedStock,
+    handleSelectExchange,
+    handleSelectStock,
+    handleBackToHome,
+  } = useChatStore();
 
   return (
     <ThemeProvider theme={theme}>
@@ -81,23 +55,51 @@ const App = () => {
               justifyContent: "space-between",
               alignItems: "center",
               boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.15)",
+              overflow: "auto",
             }}
           >
-            <MessageBar message="Hello, how can I help you today?" />
-            {!exchange && <HomeMenu onSelectExchange={handleSelectExchange} />}
-            {exchange && !selectedStock && (
-              <StockMenu
-                stocks={exchange.topStocks}
-                onSelectStock={handleSelectStock}
-                onBack={handleBackToHome}
-              />
-            )}
-            {selectedStock && (
-              <StockDetails
-                stock={selectedStock}
-                onBack={() => setSelectedStock(null)}
-              />
-            )}
+            <Stack
+              spacing={2}
+              sx={{ width: "100%", padding: "0 2rem", flex: 1 }}
+            >
+              {chatHistory.map((item, index) => (
+                <MessageBar key={index} {...item} />
+              ))}
+              {!exchange && (
+                <MessageBar
+                  type="assistant"
+                  content={
+                    <HomeMenu
+                      onSelectExchange={handleSelectExchange}
+                      exchanges={stockExchanges}
+                    />
+                  }
+                />
+              )}
+              {exchange && !selectedStock && (
+                <MessageBar
+                  type="assistant"
+                  content={
+                    <StockMenu
+                      stocks={exchange.topStocks}
+                      onSelectStock={handleSelectStock}
+                      onBack={handleBackToHome}
+                    />
+                  }
+                />
+              )}
+              {selectedStock && (
+                <MessageBar
+                  type="assistant"
+                  content={
+                    <StockDetails
+                      stock={selectedStock}
+                      onBack={() => setSelectedStock(null)}
+                    />
+                  }
+                />
+              )}
+            </Stack>
             <Footer />
           </Paper>
         </Stack>
