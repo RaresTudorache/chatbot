@@ -50,24 +50,6 @@ export const useChatStore = create<StoreState>()(
         set((state) => ({
           chatHistory: [...state.chatHistory, chatItem],
         }));
-
-        // Add loading state
-        set((state) => ({
-          chatHistory: [
-            ...state.chatHistory,
-            {
-              type: UserType.ASSISTANT,
-              contentType: ContentType.LOADING,
-            },
-          ],
-        }));
-
-        // Remove loading state after 2 seconds
-        setTimeout(() => {
-          set((state) => ({
-            chatHistory: state.chatHistory.slice(0, -1),
-          }));
-        }, 2000);
       },
 
       handleSelectExchange: (exchangeCode) => {
@@ -91,11 +73,6 @@ export const useChatStore = create<StoreState>()(
             exchangeData: foundExchange,
           });
         }
-
-        addToChatHistory({
-          type: UserType.ASSISTANT,
-          contentType: ContentType.LOADING,
-        });
       },
 
       handleSelectStock: (stock) => {
