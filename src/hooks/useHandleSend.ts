@@ -10,19 +10,28 @@ export const useHandleSend = () => {
     handleSelectStock,
     addToChatHistory,
   } = useChatStore();
+
+  // State to manage the input text in the chat
   const [inputText, setInputText] = useState("");
 
+  /**
+   * Handles the sending of messages and processes different types of user inputs:
+   * 1. Exchange selection
+   * 2. Stock selection (based on chat history)
+   * 3. Restart command
+   * 4. Regular text messages
+   */
   const handleSend = () => {
     if (!inputText.trim()) return;
 
-    // Add user message to chat
     addToChatHistory({
       type: UserType.USER,
       contentType: ContentType.TEXT,
       textContent: inputText,
     });
 
-    // Check if input contains any exchange name or abbreviation
+    // Check for exchange names in the input
+    // Supports major exchanges: NYSE, NASDAQ, LSE, TSE
     const exchanges = ["NYSE", "NASDAQ", "LSE", "TSE"];
     const exchangeFound = exchanges.find((exchange) =>
       inputText.toLowerCase().includes(exchange.toLowerCase())
@@ -33,12 +42,14 @@ export const useHandleSend = () => {
       return;
     }
 
-    // Check if input contains any stock name from chat history
+    // Search for stock names mentioned in previous conversations
+    // This allows users to reference stocks they've already discussed
     const stocksInHistory = chatHistory
       .filter((item) => item.contentType === ContentType.STOCK_DETAILS)
       .map((item) => item.stockData?.stockName)
       .filter(Boolean);
 
+    // Matches partial words in both directions for better user experience
     const stockFound = stocksInHistory.find((stockName) => {
       if (!stockName) return false;
       const stockWords = stockName.toLowerCase().split(" ");
@@ -50,6 +61,7 @@ export const useHandleSend = () => {
       );
     });
 
+    // If a stock is found, retrieve its full details and handle the selection
     if (stockFound) {
       const stock = chatHistory.find(
         (item) =>
@@ -64,14 +76,15 @@ export const useHandleSend = () => {
       }
     }
 
-    // Check if input is "restart"
+    // Handle the restart command to reset the chat
     if (inputText === "restart") {
       handleBackToHome();
       setInputText("");
       return;
     }
 
-    // If no matches, just add the message
+    // If none of the above conditions are met,
+    // the message has already been added to chat history
     setInputText("");
   };
 

@@ -10,6 +10,11 @@ import { useChatStore } from "./store/useChatStore";
 import { ContentType } from "./types/types";
 import { useRef, useEffect } from "react";
 
+/**
+ * Main App component that orchestrates the chat interface for stock trading.
+ * Manages the layout, chat history rendering, and automatic scrolling of messages.
+ * Uses Material-UI components for consistent styling and responsiveness.
+ */
 const App = () => {
   const {
     chatHistory,
@@ -19,8 +24,10 @@ const App = () => {
     handleBackToHome,
   } = useChatStore();
 
+  // Ref for auto-scrolling the chat container to the latest message
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+  // Auto-scroll to bottom whenever chat history updates
   useEffect(() => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop =

@@ -1,3 +1,23 @@
+/**
+
+ * This store manages the state and interactions for a chat-based interface
+ * that helps users explore stock exchanges and their listed stocks.
+ *
+ * Key responsibilities:
+ * - Maintains the current selected exchange and stock
+ * - Manages chat history between user and assistant
+ * - Handles navigation between exchanges and stocks
+ * - Persists chat state across sessions
+ *
+ * The chat flow typically follows this pattern:
+ * 1. Shows welcome message and list of exchanges
+ * 2. User selects an exchange -> Shows stocks in that exchange
+ * 3. User selects a stock -> Shows detailed stock information
+ *
+ * The store uses Zustand for state management and includes persistence
+ * to maintain the chat state across page reloads.
+ */
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import {
@@ -23,8 +43,6 @@ type StoreState = {
   addToChatHistory: (chatItem: ChatItem) => void;
 };
 
-//this could be futher improved by using a reducer to handle the chat history
-// and also by creating scenarios
 export const useChatStore = create<StoreState>()(
   persist(
     (set, get) => ({
