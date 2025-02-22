@@ -1,5 +1,5 @@
 import { Stack, CssBaseline, ThemeProvider, Paper } from "@mui/material";
-import HomeMenu from "./components/ExchangeMenu/ExchangeMenu";
+import ExchangeMenu from "./components/ExchangeMenu/ExchangeMenu";
 import StockDetails from "./components/StockDetails/StockDetails";
 import StockMenu from "./components/StockMenu/StockMenu";
 import Header from "./components/Header/Header";
@@ -92,7 +92,7 @@ const App = () => {
                         key={index}
                         type={item.type}
                         content={
-                          <HomeMenu
+                          <ExchangeMenu
                             exchanges={stockExchanges}
                             onSelectExchange={handleSelectExchange}
                           />
