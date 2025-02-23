@@ -31,7 +31,6 @@ export const useHandleSend = () => {
     });
 
     // Check for exchange names in the input
-    // Supports major exchanges: NYSE, NASDAQ, LSE, TSE
     const exchanges = ["NYSE", "NASDAQ", "LSE", "TSE"];
     const exchangeFound = exchanges.find((exchange) =>
       inputText.toLowerCase().includes(exchange.toLowerCase())
@@ -83,8 +82,14 @@ export const useHandleSend = () => {
       return;
     }
 
-    // If none of the above conditions are met,
-    // the message has already been added to chat history
+    // If none of the above conditions are met, add a warning message
+    addToChatHistory({
+      type: UserType.ASSISTANT,
+      contentType: ContentType.TEXT,
+      textContent:
+        "I couldn't find any specific action to take for your message. Please try mentioning an exchange (NYSE, NASDAQ, LSE, TSE) or a previously discussed stock.",
+    });
+
     setInputText("");
   };
 
