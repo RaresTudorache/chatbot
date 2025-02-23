@@ -1,4 +1,4 @@
-## Getting Started
+# Getting Started
 
 1. Clone this repository
 2. Install dependencies:
@@ -12,53 +12,30 @@
 
 4. Open your browser and navigate to `http://localhost:5173`
 
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+# Key Implementation Details:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Global State with Zustand:
 
-## Expanding the ESLint configuration
+ - The store maintains the chat history as an array of ChatItem objects.
+ - Each chat item contains essential metadata such as the sender (UserType), content type (ContentType), and relevant exchange or stock data when applicable.
+ - This centralized approach ensures smooth updates and avoids unnecessary re-renders.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Flexible Content Handling:
 
-- Configure the top-level `parserOptions` property like this:
+ - Messages can be simple text or interactive components (e.g., StockMenu, StockDetails).
+ - The content type dictates how messages are displayed, allowing the chatbot to provide rich, structured responses dynamically.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+ ## Efficient UI Rendering:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+ - The MessageBar component dynamically adjusts its styling based on the sender (UserType).
+ - Conditional rendering ensures that different content types are properly displayed, whether as plain text or structured UI elements.
+ - The App.tsx file is responsible for rendering the chat interface, iterating over the chat history from the store, and ensuring seamless updates.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Performance Optimization & Maintainability:
+
+ - Avoids unnecessary state mutations by leveraging Zustand’s shallow state updates.
+ - Encapsulates chat-related logic within the store, keeping UI components clean and focused on presentation.
+ - Ensures scalability for future enhancements, such as additional content types or interactive features.
